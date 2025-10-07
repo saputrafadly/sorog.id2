@@ -1,400 +1,546 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Private Sorog.id</title>
-  </head>
-  <body>
-    <header class="header" id="home">
-      <div class="section__container header__container">
-        <nav>
-          <div class="nav__menu__btn" id="menu-btn">
-            <span><i class="ri-menu-2-line"></i></span>
-            <h4>Sudah Punya Akun ?</h4>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlap Friends UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #97afdb 0%, #6b729e 50%, #f093fb00 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', Arial, sans-serif;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveGrid 20s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes moveGrid {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+    .floating-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .shape {
+      position: absolute;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      animation: float 15s infinite ease-in-out;
+    }
+    .shape:nth-child(1) {
+      width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s;
+    }
+    .shape:nth-child(2) {
+      width: 60px; height: 60px; top: 70%; right: 15%; animation-delay: 2s;
+    }
+    .shape:nth-child(3) {
+      width: 100px; height: 100px; bottom: 20%; left: 20%; animation-delay: 4s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+      /* Responsive: min-height 0vh di HP */
+      @media (max-width: 767px) {
+        .container {
+          min-height: 0vh;
+        }
+      }
+    .card {
+      position: relative;
+      height: 400px;
+      border-radius: 36px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: 36px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card img.bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.9);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .badge {
+      position: absolute;
+      top: 20px;
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 8px 16px 8px 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+    .badge:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-2px);
+    }
+    .badge.location { left: 20px; }
+    .badge.days { right: 20px; }
+    .badge svg {
+      margin-right: 7px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    }
+    .overlap-box {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 14px 32px;
+  min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid rgba(255,255,255,0.3);
+  z-index: 2;
+  transition: all 0.3s ease;
+    }
+    .overlap-box:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateX(-50%) translateY(-4px);
+    }
+    .avatars {
+  position: static;
+  display: flex;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.7);
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      transition: transform 0.3s ease;
+    }
+    .avatar:hover {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+    .avatar + .avatar { margin-left: -6px; }
+    .overlap-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  margin-left: 0;
+    }
+    .main-text {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 28px;
+      text-align: center;
+      line-height: 1.4;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      letter-spacing: -0.5px;
+    }
+    .slider-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      margin: 0 5px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .dot:hover {
+      background: rgba(255,255,255,0.5);
+      transform: scale(1.2);
+    }
+    .dot.active {
+      background: #fff;
+      width: 32px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .apple-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(146deg, #6b729e -36% 40%, #97afdb 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 16px 0;
+      width: 340px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .apple-btn:hover {
+      background: rgba(0, 0, 0, 0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .apple-btn:active { transform: translateY(0); }
+    .apple-btn svg { margin-right: 12px; }
+    @media (max-width: 768px) {
+      .card, .apple-btn { width: 92vw; max-width: 340px; }
+      .card { height: 440px; }
+      .main-text { font-size: 24px; }
+    }
+    @media (max-width: 400px) {
+      .card { height: 420px; border-radius: 32px; }
+      .badge { font-size: 13px; padding: 6px 14px 6px 10px; }
+  .overlap-box { padding: 10px 18px; min-width: 120px; gap: 10px; }
+      .avatar { width: 36px; height: 36px; }
+      .overlap-text { font-size: 14px; }
+      .main-text { font-size: 22px; margin-bottom: 24px; }
+      .apple-btn { font-size: 16px; padding: 14px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+  <div class="container">
+    <div class="slider-wrapper">
+      <div class="slider-track">
+        <div class="card">
+          <img class="bg-img" src="https://i.pinimg.com/736x/b9/ee/56/b9ee567a7f572eaae5d9fc84af18fde1.jpg" alt="Background">
+          <div class="badge location">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.5c.28 0 .53-.16.65-.41l5.25-11.25A.75.75 0 0 0 14.25 4.5H3.75a.75.75 0 0 0-.65 1.34l5.25 11.25c.12.25.37.41.65.41Zm0-2.12L4.81 6h8.38L9 14.38Z" fill="#fff"/></svg>
+            New York
           </div>
-          <ul class="nav__links" id="nav-links">
-            <li><a href="#travel">Masuk</a></li>
-            <li><a href="#discover">Kritik & Saran</a></li>
-          </ul>
-        </nav>
-        <div class="header__image">
-          <img src="./assets/wong.png" alt="header" />
-        </div>
-        <div class="header__content">
-          <h1>Private<br />Sorog.id</h1>
-          <p class="section__description">
-            Penasaran sejauh mana kemampuan baca kitab kakak, atau bahkan baru mulai? Yuk ikut sesi sorogan seru ini! Dari pemula sampai yang udah lihai, 
-            semuanya bakal dapet arahan biar makin jago ngaji kitab kuning!
-          </p>
-          <div class="header__btns">
-            <button class="btn">Yuk Mulai !</button>
-            <button class="btn"><i class="ri-play-circle-line" style="margin-right:8px;font-size:15px;"></i>Lihat Vidio</button>
+          <div class="badge days">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" fill="#fff"/><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M6 2.25v2.25M12 2.25v2.25" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            3 Days
+          </div>
+          <div class="overlap-box">
+            <div class="avatars">
+              <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar 1">
+            </div>
+            <span class="overlap-text">Overlap with Lucas</span>
           </div>
         </div>
-      </div>
-    </header>
 
-     <section class="section__container customer__container" id="program">
-      <h2 class="section__header">
-        Program Terbaru Kami<br />
-      </h2>
-      <!-- Slider main container -->
-      <div class="swiper">
-        <!-- Additional required wrapper -->
-        <div class="swiper-wrapper">
-          <!-- Slides -->
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="https://cdn.lynkid.my.id/profile/10-06-2025/1749531567626_6613419.webp"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                The app made booking my trip a breeze—effortless and efficient!
-              </div>
-            </div>
+         <div class="card">
+          <img class="bg-img" src="https://i.pinimg.com/736x/e3/d2/59/e3d2598bfb5de3a0dd46d25ae5d8b86b.jpg" alt="Background">
+          <div class="badge location">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.5c.28 0 .53-.16.65-.41l5.25-11.25A.75.75 0 0 0 14.25 4.5H3.75a.75.75 0 0 0-.65 1.34l5.25 11.25c.12.25.37.41.65.41Zm0-2.12L4.81 6h8.38L9 14.38Z" fill="#fff"/></svg>
+            New York
           </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="https://cdn.lynkid.my.id/profile/10-06-2025/1749531567626_6613419.webp"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                Incredible customer service—prompt responses and problem-solving
-              </div>
-            </div>
+          <div class="badge days">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" fill="#fff"/><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M6 2.25v2.25M12 2.25v2.25" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            3 Days
           </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="https://cdn.lynkid.my.id/profile/10-06-2025/1749531567626_6613419.webp"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                Love the personalized itineraries, keeping me organized
-                throughout trip.
-              </div>
+          <div class="overlap-box">
+            <div class="avatars">
+              <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar 1">
             </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="https://cdn.lynkid.my.id/profile/10-06-2025/1749531567626_6613419.webp"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                The travel updates feature kept me informed, especially during
-                uncertain times.
-              </div>
-            </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="https://cdn.lynkid.my.id/profile/10-06-2025/1749531567626_6613419.webp"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                Great discounts and exclusive deals—saved a lot on my bookings
-              </div>
-            </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="https://cdn.lynkid.my.id/profile/10-06-2025/1749531567626_6613419.webp"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                User-friendly interface and seamless navigation—my go-to travel
-                companion.
-              </div>
-            </div>
+            <span class="overlap-text">Overlap with Lucas</span>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="section__container travel__container" id="kontak">
-      <div class="travel__image">
-        <img src="./assets/wong2.png" alt="travel" />
-      </div>
-      <div class="travel__content">
-        <h2 class="section__header">Kenapa Harus Memilih Kami?</h2>
-        <p class="section__description">
-          Our concierge is designed to elevate your travel experience by
-          providing personalized assistance and expert guidance throughout your
-          journey.
-        </p>
-        <button class="btn">Hubungi Kami</button>
-      </div>
-    </section>
+         <div class="card">
+          <img class="bg-img" src="https://i.pinimg.com/736x/c2/b0/7c/c2b07ce3fff76540967f45dfaba63bb0.jpg" alt="Background">
+          <div class="badge location">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.5c.28 0 .53-.16.65-.41l5.25-11.25A.75.75 0 0 0 14.25 4.5H3.75a.75.75 0 0 0-.65 1.34l5.25 11.25c.12.25.37.41.65.41Zm0-2.12L4.81 6h8.38L9 14.38Z" fill="#fff"/></svg>
+            New York
+          </div>
+          <div class="badge days">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" fill="#fff"/><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M6 2.25v2.25M12 2.25v2.25" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            3 Days
+          </div>
+          <div class="overlap-box">
+            <div class="avatars">
+              <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar 1">
+            </div>
+            <span class="overlap-text">Overlap with Lucas</span>
+          </div>
+        </div>
 
-    <section class="section__container customer__container" id="media">
-      <h2 class="section__header">
-        Media Pembelajaran
-      </h2>
-      <!-- Slider main container -->
-      <div class="swiper">
-        <!-- Additional required wrapper -->
-        <div class="swiper-wrapper">
-          <!-- Slides -->
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="assets/customer-user-1.jpg"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                The app made booking my trip a breeze—effortless and efficient!
-              </div>
-            </div>
+        <div class="card">
+          <img class="bg-img" src="https://i.pinimg.com/736x/21/d9/84/21d984a0cbfe571a0ac38dade1091865.jpg" alt="Background">
+          <div class="badge location">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.5c.28 0 .53-.16.65-.41l5.25-11.25A.75.75 0 0 0 14.25 4.5H3.75a.75.75 0 0 0-.65 1.34l5.25 11.25c.12.25.37.41.65.41Zm0-2.12L4.81 6h8.38L9 14.38Z" fill="#fff"/></svg>
+            Bali
           </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="assets/customer-user-2.jpg"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                Incredible customer service—prompt responses and problem-solving
-              </div>
-            </div>
+          <div class="badge days">
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" fill="#fff"/><rect x="2.25" y="4.5" width="13.5" height="10.5" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M6 2.25v2.25M12 2.25v2.25" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            5 Days
           </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="assets/customer-user-3.jpg"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                Love the personalized itineraries, keeping me organized
-                throughout trip.
-              </div>
+          <div class="overlap-box">
+            <div class="avatars">
+              <img class="avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Avatar 1">
             </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="assets/customer-user-4.jpg"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                The travel updates feature kept me informed, especially during
-                uncertain times.
-              </div>
-            </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="assets/customer-user-5.jpg"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                Great discounts and exclusive deals—saved a lot on my bookings
-              </div>
-            </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="customer__card">
-              <img
-                src="assets/1.png"
-                alt="customer"
-                class="customer__image"
-              />
-              <img
-                src="assets/customer-user-6.jpg"
-                alt="customer user"
-                class="customer__user"
-              />
-              <div class="customer__card__content">
-                User-friendly interface and seamless navigation—my go-to travel
-                companion.
-              </div>
-            </div>
+            <span class="overlap-text">Overlap with Sarah</span>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+    <div class="main-text">Selamat Datang Kembali<br>Silahkan Login</div>
+    <div class="slider-indicator">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+    </div>
+    <button class="apple-btn">
+  <svg width="24" height="24" viewBox="0 0 24 24"><g><path fill="#4285F4" d="M21.805 10.023h-9.765v3.977h5.617c-.242 1.242-1.242 3.023-3.617 3.023-2.18 0-3.961-1.805-3.961-4.023s1.781-4.023 3.961-4.023c1.242 0 2.07.492 2.547.914l2.484-2.422c-1.086-.992-2.484-1.617-5.031-1.617-4.023 0-7.289 3.266-7.289 7.148s3.266 7.148 7.289 7.148c4.203 0 6.984-2.953 6.984-7.117 0-.477-.055-.836-.125-1.148z"/><path fill="#34A853" d="M3.545 7.545l3.273 2.402c.891-1.711 2.672-2.949 4.727-2.949 1.242 0 2.07.492 2.547.914l2.484-2.422c-1.086-.992-2.484-1.617-5.031-1.617-2.953 0-5.477 1.797-6.617 4.074z"/><path fill="#FBBC05" d="M12 21.938c2.484 0 4.57-.82 6.094-2.227l-2.812-2.305c-.773.547-1.773.867-3.281.867-2.375 0-3.375-1.781-3.617-3.023h-3.273v1.898c1.133 2.242 3.57 4.79 6.889 4.79z"/><path fill="#EA4335" d="M21.805 10.023h-9.765v3.977h5.617c-.242 1.242-1.242 3.023-3.617 3.023-2.18 0-3.961-1.805-3.961-4.023s1.781-4.023 3.961-4.023c1.242 0 2.07.492 2.547.914l2.484-2.422c-1.086-.992-2.484-1.617-5.031-1.617-4.023 0-7.289 3.266-7.289 7.148s3.266 7.148 7.289 7.148c4.203 0 6.984-2.953 6.984-7.117 0-.477-.055-.836-.125-1.148z"/></g></svg>
+  Sign in with Google
+    </button>
+  </div>
 
-    <section class="section__container faq__container" id="faq">
-      <h2 class="section__header">FAQ</h2>
-      <div class="faq__grid">
-        <div class="faq__card">
-          <div class="faq__header">
-            <h4>How can I book a flight on your website?</h4>
-            <span><i class="ri-arrow-down-s-line"></i></span>
-          </div>
-          <div class="faq__content">
-            Booking a flight is easy! Simply visit our homepage and enter your
-            departure and destination cities, along with your travel dates.
-            Click on the "Search" button, and you'll see a list of available
-            flights. Choose the one that suits you best and follow the simple
-            steps to complete your booking.
-          </div>
-        </div>
-        <div class="faq__card">
-          <div class="faq__header">
-            <h4>
-              What should I do if I need to make changes to my hotel
-              reservation?
-            </h4>
-            <span><i class="ri-arrow-down-s-line"></i></span>
-          </div>
-          <div class="faq__content">
-            Making changes to your hotel reservation is hassle-free. Log in to
-            your account, go to the "My Bookings" section, and select the
-            reservation you want to modify. From there, you can usually find
-            options to edit dates, room preferences, or even cancel the
-            reservation if needed.
-          </div>
-        </div>
-        <div class="faq__card">
-          <div class="faq__header">
-            <h4>
-              Are there any travel restrictions or COVID-19 guidelines I should
-              be aware of for my destination?
-            </h4>
-            <span><i class="ri-arrow-down-s-line"></i></span>
-          </div>
-          <div class="faq__content">
-            Stay informed about travel restrictions and COVID-19 guidelines by
-            checking our dedicated travel advisory page. We provide up-to-date
-            information on entry requirements, quarantine rules, and health
-            protocols for various destinations. It's essential to review this
-            information before planning your trip.
-          </div>
-        </div>
-        <div class="faq__card">
-          <div class="faq__header">
-            <h4>
-              What payment methods are accepted for bookings on your site?
-            </h4>
-            <span><i class="ri-arrow-down-s-line"></i></span>
-          </div>
-          <div class="faq__content">
-            We accept a variety of payment methods, including major credit
-            cards, debit cards, and popular digital wallets. During the booking
-            process, you can choose your preferred payment option. Rest assured,
-            our payment gateway is secure and ensures the safety of your
-            financial information.
-          </div>
-        </div>
-        <div class="faq__card">
-          <div class="faq__header">
-            <h4>
-              How can I contact customer support for assistance during my trip?
-            </h4>
-            <span><i class="ri-arrow-down-s-line"></i></span>
-          </div>
-          <div class="faq__content">
-            We're here to help! You can reach our customer support team 24/7
-            through our helpline or via email. We also offer a live chat option
-            on our website for quick assistance. If you encounter any issues
-            during your trip or have questions, don't hesitate to get in touch,
-            and we'll do our best to assist you promptly.
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="terms-footer">
+    <div class="terms">
+      Dengan masuk ke Sorog.id, kamu menyetujui <a href="#" class="terms-link">Ketentuan</a> dan <a href="#" class="terms-link">Kebijakan Privasi</a> kami.
+    </div>
+  </div>
+  </div>
+  <style>
+    .slider-wrapper {
+  width: 100%;
+  max-width: 1080px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  position: relative;
+  touch-action: pan-y;
+    }
+    .slider-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.4s cubic-bezier(.4,1,.4,1);
+  will-change: transform;
+}
+    .terms-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 28px;
+      margin-bottom: 18px;
+      width: 100%;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  .terms {
+      font-size: 14px;
+      color: #fff;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      margin-top: 2px;
+      max-width: 370px;
+    }
+    .terms-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .terms-link:hover {
+      text-decoration: underline;
+    }
+@media (max-width: 768px) {
+  .slider-track {
+    gap: 0;
+  }
+    }
+    .card {
+      min-width: calc(100% - 20px);
+      max-width: 340px;
+      margin: 0;
+    }
+    @media (max-width: 768px) {
+      .slider-wrapper {
+        max-width: 340px;
+      }
+      .card {
+        min-width: 100%;
+        max-width: 340px;
+      }
+    }
+    @media (min-width: 769px) {
+      .slider-wrapper {
+        max-width: 1080px;
+      }
+      .card {
+        min-width: calc(33.333% - 13.33px);
+        max-width: 340px;
+      }
+    }
+    @media (max-width: 400px) {
+      .slider-wrapper {
+        max-width: 340px;
+      }
+      .card {
+        min-width: 100%;
+        max-width: 340px;
+      }
+    }
+  </style>
+  <script>
+    const sliderTrack = document.querySelector('.slider-track');
+    const cards = document.querySelectorAll('.slider-track .card');
+    const dots = document.querySelectorAll('.slider-indicator .dot');
+    let current = 0;
 
-    <footer class="footer">
-      <div class="section__container footer__container">
-        <h2 class="section__header">Sorog.id</h2>
-        <div class="footer__socials">
-          <a href="#"><i class="ri-threads-fill"></i></a>
-          <a href="#"><i class="ri-instagram-fill"></i></a>
-          <a href="#"><i class="ri-tiktok-fill"></i></a>
-        </div>
-        <ul class="footer__links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#program">Program</a></li>
-          <li><a href="#media">Media</a></li>
-          <li><a href="#kontak">Kontak</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer__bar">
-        Copyright © 2025 Sorog.id
-      </div>
-    </footer>
+    function getCardsPerView() {
+      return window.innerWidth > 768 ? 3 : 1;
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="main.js"></script>
-  </body>
+    function updateSlider() {
+      const cardsPerView = getCardsPerView();
+      const percent = 100 / cardsPerView;
+      sliderTrack.style.transform = `translateX(-${current * percent}%)`;
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === current));
+    }
+
+    function updateDots() {
+      const cardsPerView = getCardsPerView();
+      const total = Math.max(1, cards.length - cardsPerView + 1);
+      const indicator = document.querySelector('.slider-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === current ? ' active' : '');
+        dot.addEventListener('click', () => {
+          current = i;
+          updateSlider();
+          updateDots();
+        });
+        indicator.appendChild(dot);
+      }
+    }
+
+    function clampCurrent() {
+      const cardsPerView = getCardsPerView();
+      const max = Math.max(0, cards.length - cardsPerView);
+      if (current > max) current = max;
+      if (current < 0) current = 0;
+    }
+
+    // Touch/drag support
+    let startX = 0, dx = 0, dragging = false;
+    sliderTrack.addEventListener('touchstart', e => {
+      dragging = true;
+      startX = e.touches[0].clientX;
+    });
+    sliderTrack.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      dx = e.touches[0].clientX - startX;
+      const cardsPerView = getCardsPerView();
+      const percent = 100 / cardsPerView;
+      sliderTrack.style.transform = `translateX(${-current * percent + dx / sliderTrack.offsetWidth * percent}%)`;
+    });
+    sliderTrack.addEventListener('touchend', e => {
+      dragging = false;
+      const cardsPerView = getCardsPerView();
+      if (Math.abs(dx) > 50) {
+        if (dx < 0 && current < cards.length - cardsPerView) current++;
+        if (dx > 0 && current > 0) current--;
+      }
+      dx = 0;
+      clampCurrent();
+      updateSlider();
+      updateDots();
+    });
+
+    // Mouse drag (desktop)
+    let mouseDown = false, mouseStartX = 0, mouseDx = 0;
+    sliderTrack.addEventListener('mousedown', e => {
+      mouseDown = true;
+      mouseStartX = e.clientX;
+      sliderTrack.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mousemove', e => {
+      if (!mouseDown) return;
+      mouseDx = e.clientX - mouseStartX;
+      const cardsPerView = getCardsPerView();
+      const percent = 100 / cardsPerView;
+      sliderTrack.style.transform = `translateX(${-current * percent + mouseDx / sliderTrack.offsetWidth * percent}%)`;
+    });
+    window.addEventListener('mouseup', e => {
+      if (!mouseDown) return;
+      mouseDown = false;
+      sliderTrack.style.cursor = '';
+      const cardsPerView = getCardsPerView();
+      if (Math.abs(mouseDx) > 50) {
+        if (mouseDx < 0 && current < cards.length - cardsPerView) current++;
+        if (mouseDx > 0 && current > 0) current--;
+      }
+      mouseDx = 0;
+      clampCurrent();
+      updateSlider();
+      updateDots();
+    });
+
+    window.addEventListener('resize', () => {
+      clampCurrent();
+      updateSlider();
+      updateDots();
+    });
+
+    clampCurrent();
+    updateSlider();
+    updateDots();
+
+  </script>
+</body>
 </html>
